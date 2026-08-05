@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝐂𝐨𝐝𝐞𝐗</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://cdn.rmz.gg/store/favicon/a1137ef597b89a1568f70ad0a6425fe5332a6f75.gif" />
+
+        <link rel="stylesheet" href="https://assets.rmz.gg/store-themes/obsidian/assets/css/tailwind.css" />
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+        <style>
+        /* === Custom Properties === */
+        :root {
+            --rmz-bg: #0a0a0f;
+            --rmz-surface: rgba(255,255,255,0.04);
+            --rmz-surface-hover: rgba(255,255,255,0.07);
+            --rmz-border: rgba(255,255,255,0.08);
+            --rmz-text: #e4e4e7;
+            --rmz-text-muted: #71717a;
+            --rmz-primary: #44494f;
+            --rmz-on-primary: #fff;
+            --rmz-glass: rgba(255,255,255,0.05);
+            --rmz-font: 'Baloo Bhaijaan 2', sans-serif;
+        }
+        body {
+            background-color: var(--rmz-bg);
+            color: var(--rmz-text);
+            font-family: var(--rmz-font);
+        }
+        ::selection {
+            background: #44494f40;
+            color: #fff;
+        }
+
+        /* === Glass Card === */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1rem;
+            transition: all 0.2s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        /* === Skeleton Loading === */
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .skeleton-animate {
+            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.03) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+        }
+
+        /* === Swiper Overrides === */
+        .swiper-pagination-bullet { background: rgba(255,255,255,0.3) !important; opacity: 1 !important; }
+        .swiper-pagination-bullet-active { background: var(--rmz-primary, #6B4CE6) !important; }
+        .products-swiper .swiper-button-next,
+        .products-swiper .swiper-button-prev {
+            width: 40px; height: 40px; background: var(--rmz-primary, #6B4CE6);
+            border-radius: 50%; color: var(--rmz-on-primary); box-shadow: 0 2px 12px rgba(0,0,0,0.3); transition: all 0.3s ease;
+        }
+        .products-swiper .swiper-button-next:after,
+        .products-swiper .swiper-button-prev:after { font-size: 16px; font-weight: bold; }
+        .products-swiper .swiper-button-next:hover,
+        .products-swiper .swiper-button-prev:hover { transform: scale(1.1); }
+        .products-swiper .swiper-button-disabled { opacity: 0.3; }
+        @media (max-width: 768px) {
+            .products-swiper .swiper-button-next,
+            .products-swiper .swiper-button-prev { display: none; }
+        }
+
+        /* === Native <select> options ===
+           Browsers fall back to OS-default styling for the dropdown panel
+           (white background + dark text), which is unreadable inside the
+           dark theme — especially the highlighted row, which on Chrome/Linux
+           uses light blue + white. Force a dark surface + light text so the
+           options match the rest of the storefront. macOS Safari ignores
+           these rules but the panel is OS-native there anyway. */
+        select option,
+        select optgroup {
+            background-color: #1a1a1f;
+            color: #fff;
+        }
+        select option:checked,
+        select option:hover {
+            background-color: #2a2a30;
+            color: #fff;
+        }
+
+        /* === Star Rating === */
+        .rating { display: flex; flex-direction: row-reverse; justify-content: flex-start; gap: 4px; }
+        .rating input { display: none; }
+        .rating label { font-size: 28px; color: #3f3f46; cursor: pointer; transition: color 0.15s; }
+        .rating label:hover, .rating label:hover ~ label, .rating input:checked ~ label { color: #ffc107; }
+
+        /* === Scrollbar === */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0f; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        /* === Print === */
+        @media print {
+            body { background: white !important; color: black !important; }
+            body * { visibility: hidden; }
+            .print-area, .print-area * { visibility: visible; }
+            .print-area { position: absolute; left: 0; top: 0; width: 100%; background: white !important; color: black !important; }
+            .no-print { display: none !important; }
+            .glass-card { background: white !important; border: 1px solid #ddd !important; backdrop-filter: none !important; }
+        }
+
+        /* === Infinite Scroll === */
+        .page-load-status .infinite-scroll-request,
+        .page-load-status .infinite-scroll-last,
+        .page-load-status .infinite-scroll-error { display: none; }
+
+        /* === FAQ === */
+        .faq-item.active .faq-icon { transform: rotate(180deg); }
+        .faq-item.active .faq-answer { max-height: 500px !important; padding: 20px !important; }
+        .faq-hidden { display: none; opacity: 0; transform: translateY(-10px); }
+        .faq-hidden.faq-visible { display: block; opacity: 1; transform: translateY(0); }
+
+        /* === Animations === */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .products-content.loaded { animation: fadeIn 0.3s ease-in; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* === Mobile Menu === */
+        .mobile-menu-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px); z-index: 40;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .mobile-menu-overlay.active { opacity: 1; pointer-events: auto; }
+        .mobile-drawer {
+            position: fixed; top: 0; right: -300px; width: 300px; height: 100%;
+            background: #111118; border-left: 1px solid rgba(255,255,255,0.08);
+            z-index: 50; transition: right 0.3s ease; overflow-y: auto;
+        }
+        .mobile-drawer.active { right: 0; }
+    </style>
+
+    <!-- Pixel Events Helper #RMZGG Integrations -->
+<script type="5f419077e0f0367b479bb3a9-text/javascript">
+/**
+ * RMZ Pixel Events Helper
+ * Provides utility functions for tracking e-commerce events across Facebook, TikTok, and Snapchat pixels
+ */
+// Ensure dataLayer exists even if the GTM snippet hasn't executed yet.
+// This prevents a race where early calls to RMZPixel happen before GTM
+// initializes the array (e.g. a very fast page_view → add_to_cart flow).
+window.dataLayer = window.dataLayer || [];
+
+window.RMZPixel = window.RMZPixel || {
+    /**
+     * Map display currency symbols to ISO 4217 codes.
+     * Google Ads / GA4 require ISO codes (SAR, USD, EUR) — Arabic
+     * symbols like ر.س are silently ignored and purchases show $0.
+     */
+    _currencyMap: {
+        'ر.س': 'SAR', 'ريال': 'SAR',
+        '$': 'USD',
+        '€': 'EUR',
+        'د.إ': 'AED',
+        'د.ب': 'BHD',
+        'د.ك': 'KWD',
+        'ر.ع': 'OMR',
+        'ر.ق': 'QAR',
+        'ج.م': 'EGP',
+        '₺': 'TRY',
+        'د.م': 'MAD',
+        '£': 'GBP',
+        'ر.ي': 'YER',
+        'د.ج': 'DZD',
+        'د.ت': 'TND',
+        'د.ل': 'LYD',
+        'د.ع': 'IQD',
+        'ل.ل': 'LBP',
+        'ل.س': 'SYP',
+        'د.أ': 'JOD'
+    },
+
+    _normalizeCurrency: function(val) {
+        if (!val) return 'SAR';
+        var mapped = this._currencyMap[val];
+        if (mapped) return mapped;
+        // Already an ISO code (e.g. SAR, USD) — uppercase it
+        return val.toUpperCase();
+    },
+
+    /**
+     * Check if Snapchat Pixel is available
+     */
+    isSnapPixelAvailable: function() {
+        return typeof snaptr === 'function';
+    },
+
+    /**
+     * Push a GA4 Enhanced Ecommerce event to Google Tag Manager's dataLayer.
+     * Schema mirrors GA4's Enhanced Ecommerce spec (event, currency, value,
+     * items[]) so standard GA4 Event tags in merchant GTM containers work
+     * out of the box.
+     *
+     * Never throws — tracking errors must not break the storefront.
+     */
+    _gtm: function(event, params) {
+        try {
+            if (typeof window === 'undefined') return;
+            window.dataLayer = window.dataLayer || [];
+            var payload = { event: event };
+            if (params) {
+                for (var k in params) {
+                    if (Object.prototype.hasOwnProperty.call(params, k)) {
+                        payload[k] = params[k];
+                    }
+                }
+            }
+            window.dataLayer.push(payload);
+        } catch (e) { /* swallow — tracking must never break the storefront */ }
+    },
+
+    /**
+     * Internal helper: normalize a single product into a GA4 `items[]` entry.
+     */
+    _gtmItem: function(product) {
+        return {
+            item_id: String(product.id != null ? product.id : ''),
+            item_name: product.name || '',
+            item_category: product.category || '',
+            price: Number(product.price) || 0,
+            quantity: Number(product.quantity) || 1
+        };
+    },
+
+    /**
+     * Track ViewContent event - when a product page is viewed
+     */
+    viewContent: function(product) {
+        var currency = this._normalizeCurrency(product.currency);
+
+        // Facebook Pixel
+        if (typeof fbq === 'function') {
+            fbq('track', 'ViewContent', {
+                content_ids: [product.id],
+                content_name: product.name,
+                content_type: 'product',
+                content_category: product.category || '',
+                value: product.price,
+                currency: currency
+            });
+        }
+
+        // TikTok Pixel
+        if (typeof ttq === 'object' && ttq !== null) {
+            ttq.track('ViewContent', {
+                content_id: String(product.id),
+                content_name: product.name,
+                content_type: 'product',
+                content_category: product.category || '',
+                price: product.price,
+                value: product.price,
+                currency: currency
+            });
+        }
+
+        // Snapchat Pixel
+        if (this.isSnapPixelAvailable()) {
+            snaptr('track', 'VIEW_CONTENT', {
+                item_ids: [String(product.id)],
+                item_category: product.category || '',
+                price: product.price,
+                currency: currency
+            });
+        }
+
+        // Google Tag Manager (GA4 Enhanced Ecommerce: view_item)
+        this._gtm('view_item', {
+            currency: currency,
+            value: Number(product.price) || 0,
+            items: [this._gtmItem(Object.assign({}, product, { quantity: 1 }))]
+        });
+    },
+
+    /**
+     * Track AddToCart event
+     */
+    addToCart: function(product) {
+        var currency = this._normalizeCurrency(product.currency);
+        var quantity = product.quantity || 1;
+        var value = product.price * quantity;
+
+        // Facebook Pixel
+        if (typeof fbq === 'function') {
+            fbq('track', 'AddToCart', {
+                content_ids: [product.id],
+                content_name: product.name,
+                content_type: 'product',
+                value: value,
+                currency: currency,
+                contents: [{
+                    id: product.id,
+                    quantity: quantity
+                }]
+            });
+        }
+
+        // TikTok Pixel
+        if (typeof ttq === 'object' && ttq !== null) {
+            ttq.track('AddToCart', {
+                content_id: String(product.id),
+                content_name: product.name,
+                content_type: 'product',
+                price: product.price,
+                value: value,
+                currency: currency,
+                quantity: quantity
+            });
+        }
+
+        // Snapchat Pixel
+        if (this.isSnapPixelAvailable()) {
+            snaptr('track', 'ADD_CART', {
+                item_ids: [String(product.id)],
+                item_category: product.category || '',
+                price: value,
+                currency: currency,
+                number_items: quantity
+            });
+        }
+
+        // Google Tag Manager (GA4 Enhanced Ecommerce: add_to_cart)
+        this._gtm('add_to_cart', {
+            currency: currency,
+            value: value,
+            items: [this._gtmItem(Object.assign({}, product, { quantity: quantity }))]
+        });
+    },
+
+    /**
+     * Track InitiateCheckout event
+     */
+    initiateCheckout: function(data) {
+        var currency = this._normalizeCurrency(data.currency);
+        var value = data.value || 0;
+
+        // Facebook Pixel
+        if (typeof fbq === 'function') {
+            var fbData = {
+                value: value,
+                currency: currency,
+                content_type: 'product'
+            };
+
+            if (data.products && data.products.length > 0) {
+                fbData.content_ids = data.products.map(function(p) { return p.id; });
+                fbData.contents = data.products.map(function(p) {
+                    return { id: p.id, quantity: p.quantity || 1 };
+                });
+                fbData.num_items = data.products.reduce(function(sum, p) {
+                    return sum + (p.quantity || 1);
+                }, 0);
+            }
+
+            fbq('track', 'InitiateCheckout', fbData);
+        }
+
+        // TikTok Pixel
+        if (typeof ttq === 'object' && ttq !== null) {
+            var ttData = {
+                value: value,
+                currency: currency,
+                content_type: 'product'
+            };
+
+            if (data.products && data.products.length > 0) {
+                ttData.contents = data.products.map(function(p) {
+                    return {
+                        content_id: String(p.id),
+                        content_name: p.name,
+                        quantity: p.quantity || 1,
+                        price: p.price
+                    };
+                });
+            }
+
+            ttq.track('InitiateCheckout', ttData);
+        }
+
+        // Snapchat Pixel
+        if (this.isSnapPixelAvailable()) {
+            var snapData = {
+                price: value,
+                currency: currency
+            };
+
+            if (data.products && data.products.length > 0) {
+                snapData.item_ids = data.products.map(function(p) { return String(p.id); });
+                snapData.number_items = data.products.reduce(function(sum, p) {
+                    return sum + (p.quantity || 1);
+                }, 0);
+            }
+
+            snaptr('track', 'START_CHECKOUT', snapData);
+        }
+
+        // Google Tag Manager (GA4 Enhanced Ecommerce: begin_checkout)
+        var gtmItems = [];
+        if (data.products && data.products.length > 0) {
+            for (var i = 0; i < data.products.length; i++) {
+                gtmItems.push(this._gtmItem(data.products[i]));
+            }
+        }
+        this._gtm('begin_checkout', {
+            currency: currency,
+            value: value,
+            items: gtmItems
+        });
+    },
+
+    /**
+     * Track Purchase/CompletePayment event - after successful order
+     */
+    purchase: function(data) {
+        var currency = this._normalizeCurrency(data.currency);
+        var value = data.value || 0;
+
+        // Facebook Pixel
+        if (typeof fbq === 'function') {
+            var fbData = {
+                value: value,
+                currency: currency,
+                content_type: 'product'
+            };
+
+            if (data.products && data.products.length > 0) {
+                fbData.content_ids = data.products.map(function(p) { return p.id; });
+                fbData.contents = data.products.map(function(p) {
+                    return { id: p.id, quantity: p.quantity || 1 };
+                });
+                fbData.num_items = data.products.reduce(function(sum, p) {
+                    return sum + (p.quantity || 1);
+                }, 0);
+            }
+
+            fbq('track', 'Purchase', fbData);
+        }
+
+        // TikTok Pixel
+        if (typeof ttq === 'object' && ttq !== null) {
+            // Advanced Matching: identify must be called before track so the
+            // purchase event carries email/phone (TikTok hashes them client-side;
+            // without this, Events Manager raises "Email and phone are missing").
+            if (data.customer && (data.customer.email || data.customer.phone)) {
+                var ttIdentity = {};
+                if (data.customer.email) ttIdentity.email = data.customer.email;
+                if (data.customer.phone) {
+                    // E.164 expected; strip stray formatting characters defensively.
+                    ttIdentity.phone_number = String(data.customer.phone).replace(/[^\d+]/g, '');
+                }
+                ttq.identify(ttIdentity);
+            }
+
+            var ttData = {
+                value: value,
+                currency: currency,
+                content_type: 'product'
+            };
+
+            if (data.products && data.products.length > 0) {
+                ttData.contents = data.products.map(function(p) {
+                    return {
+                        content_id: String(p.id),
+                        content_name: p.name,
+                        quantity: p.quantity || 1,
+                        price: p.price
+                    };
+                });
+            }
+
+            ttq.track('CompletePayment', ttData);
+        }
+
+        // Snapchat Pixel
+        if (this.isSnapPixelAvailable()) {
+            var snapData = {
+                price: value,
+                currency: currency,
+                transaction_id: data.orderId ? String(data.orderId) : ''
+            };
+
+            if (data.products && data.products.length > 0) {
+                snapData.item_ids = data.products.map(function(p) { return String(p.id); });
+                snapData.number_items = data.products.reduce(function(sum, p) {
+                    return sum + (p.quantity || 1);
+                }, 0);
+            }
+
+            snaptr('track', 'PURCHASE', snapData);
+        }
+
+        // Google Tag Manager (GA4 Enhanced Ecommerce: purchase)
+        var gtmPurchaseItems = [];
+        if (data.products && data.products.length > 0) {
+            for (var j = 0; j < data.products.length; j++) {
+                gtmPurchaseItems.push(this._gtmItem(data.products[j]));
+            }
+        }
+        this._gtm('purchase', {
+            transaction_id: data.orderId != null ? String(data.orderId) : '',
+            currency: currency,
+            value: value,
+            tax: Number(data.tax) || 0,
+            shipping: Number(data.shipping) || 0,
+            items: gtmPurchaseItems
+        });
+    },
+
+    /**
+     * Track Search event
+     */
+    search: function(query, category) {
+        // Facebook Pixel
+        if (typeof fbq === 'function') {
+            fbq('track', 'Search', {
+                search_string: query,
+                content_category: category || ''
+            });
+        }
+
+        // TikTok Pixel
+        if (typeof ttq === 'object' && ttq !== null) {
+            ttq.track('Search', {
+                query: query,
+                content_category: category || ''
+            });
+        }
+
+        // Snapchat Pixel
+        if (this.isSnapPixelAvailable()) {
+            snaptr('track', 'SEARCH', {
+                search_string: query
+            });
+        }
+
+        // Google Tag Manager (GA4: search)
+        this._gtm('search', {
+            search_term: query || '',
+            content_category: category || ''
+        });
+    },
+
+    /**
+     * Track Lead/SubmitForm event - when customer registers
+     */
+    lead: function() {
+        // Facebook Pixel
+        if (typeof fbq === 'function') {
+            fbq('track', 'Lead');
+        }
+
+        // TikTok Pixel
+        if (typeof ttq === 'object' && ttq !== null) {
+            ttq.track('SubmitForm');
+        }
+
+        // Snapchat Pixel
+        if (this.isSnapPixelAvailable()) {
+            snaptr('track', 'SIGN_UP');
+        }
+
+        // Google Tag Manager (GA4: generate_lead)
+        this._gtm('generate_lead', {});
+    },
+
+    /**
+     * Track CompleteRegistration event
+     */
+    completeRegistration: function() {
+        // Facebook Pixel
+        if (typeof fbq === 'function') {
+            fbq('track', 'CompleteRegistration');
+        }
+
+        // TikTok Pixel
+        if (typeof ttq === 'object' && ttq !== null) {
+            ttq.track('CompleteRegistration');
+        }
+
+        // Snapchat Pixel
+        if (this.isSnapPixelAvailable()) {
+            snaptr('track', 'SIGN_UP');
+        }
+
+        // Google Tag Manager (GA4: sign_up)
+        this._gtm('sign_up', { method: 'email' });
+    },
+
+    /**
+     * Track ViewItemList event (GTM/GA4 only — no equivalent Meta/TikTok pixel event).
+     *
+     * Called from category, products, and index templates when a list of
+     * products is rendered. Lets GA4 attribute "impression" metrics to the
+     * right list placement for Enhanced Ecommerce reporting.
+     *
+     * @param {string} listName - e.g. "Home Featured", "Category: Vouchers"
+     * @param {Array}  products - array of product objects {id, name, price, category, quantity}
+     */
+    viewItemList: function(listName, products) {
+        if (!products || !products.length) return;
+        var items = [];
+        for (var i = 0; i < products.length; i++) {
+            var item = this._gtmItem(products[i]);
+            item.index = i;
+            item.item_list_name = listName || '';
+            items.push(item);
+        }
+        this._gtm('view_item_list', {
+            item_list_name: listName || '',
+            items: items
+        });
+    },
+
+    /**
+     * Track ViewCart event (GTM/GA4 only).
+     *
+     * Called when the cart modal opens. Mirrors the standard GA4 view_cart
+     * event so merchants can measure cart-view → checkout conversion.
+     *
+     * @param {object} cartData - {value, currency, products[]}
+     */
+    viewCart: function(cartData) {
+        var currency = this._normalizeCurrency(cartData && cartData.currency);
+        var value = Number(cartData && cartData.value) || 0;
+        var items = [];
+        if (cartData && cartData.products && cartData.products.length) {
+            for (var i = 0; i < cartData.products.length; i++) {
+                items.push(this._gtmItem(cartData.products[i]));
+            }
+        }
+        this._gtm('view_cart', {
+            currency: currency,
+            value: value,
+            items: items
+        });
+    },
+
+    /**
+     * Track RemoveFromCart event (GTM/GA4 only — no Meta/TikTok parity yet).
+     *
+     * Called from the cart modal when a line item is removed.
+     */
+    removeFromCart: function(product) {
+        var currency = this._normalizeCurrency(product && product.currency);
+        var quantity = Number(product && product.quantity) || 1;
+        var value = (Number(product && product.price) || 0) * quantity;
+        this._gtm('remove_from_cart', {
+            currency: currency,
+            value: value,
+            items: [this._gtmItem(product || {})]
+        });
+    },
+
+    /**
+     * Track AddPaymentInfo event (GTM/GA4 only).
+     *
+     * Called on the payment page before the gateway handoff. Lets merchants
+     * measure begin_checkout → add_payment_info drop-off in GA4 funnels.
+     */
+    addPaymentInfo: function(data) {
+        var currency = this._normalizeCurrency(data && data.currency);
+        var value = Number(data && data.value) || 0;
+        var items = [];
+        if (data && data.products && data.products.length) {
+            for (var i = 0; i < data.products.length; i++) {
+                items.push(this._gtmItem(data.products[i]));
+            }
+        }
+        this._gtm('add_payment_info', {
+            currency: currency,
+            value: value,
+            payment_type: (data && data.paymentType) || '',
+            items: items
+        });
+    },
+
+    /**
+     * Track AddShippingInfo event (GTM/GA4 only).
+     *
+     * RMZ products are digital so shipping rarely applies, but GA4 standard
+     * funnels include this step. Exposed for merchants who want it.
+     */
+    addShippingInfo: function(data) {
+        var currency = this._normalizeCurrency(data && data.currency);
+        var value = Number(data && data.value) || 0;
+        var items = [];
+        if (data && data.products && data.products.length) {
+            for (var i = 0; i < data.products.length; i++) {
+                items.push(this._gtmItem(data.products[i]));
+            }
+        }
+        this._gtm('add_shipping_info', {
+            currency: currency,
+            value: value,
+            shipping_tier: (data && data.shippingTier) || '',
+            items: items
+        });
+    }
+};
+</script>
+<!-- End Pixel Events Helper #RMZGG Integrations -->
+<script id="RMZ_CURRENCIES" type="application/json">{"\u062f.\u0628":{"id":1,"name":"\u0627\u0644\u062f\u064a\u0646\u0627\u0631 \u0627\u0644\u0628\u062d\u0631\u064a\u0646\u064a \ud83c\udde7\ud83c\udded","symbol":"\u062f.\u0628","rate":0.1,"created_at":"2024-04-18T09:31:40.000000Z","updated_at":"2024-04-18T09:31:40.000000Z"},"\u062f.\u0625":{"id":2,"name":"\u0627\u0644\u062f\u0631\u0647\u0645 \u0627\u0644\u0627\u0645\u0627\u0631\u0627\u062a\u064a \ud83c\udde6\ud83c\uddea","symbol":"\u062f.\u0625","rate":0.98,"created_at":"2024-04-18T09:31:40.000000Z","updated_at":"2024-04-18T09:31:40.000000Z"},"\u062f.\u0643":{"id":3,"name":"\u0627\u0644\u062f\u064a\u0646\u0627\u0631 \u0627\u0644\u0643\u0648\u064a\u062a\u064a \ud83c\uddf0\ud83c\uddfc","symbol":"\u062f.\u0643","rate":0.082,"created_at":"2024-04-18T09:31:40.000000Z","updated_at":"2024-04-18T09:31:40.000000Z"},"\u0631.\u0639":{"id":4,"name":"\u0627\u0644\u0631\u064a\u0627\u0644 \u0627\u0644\u0639\u0645\u0627\u0646\u064a \ud83c\uddf4\ud83c\uddf2","symbol":"\u0631.\u0639","rate":0.102,"created_at":"2024-04-18T09:31:40.000000Z","updated_at":"2024-04-18T09:31:40.000000Z"},"\u0631.\u0642":{"id":5,"name":"\u0627\u0644\u0631\u064a\u0627\u0644 \u0627\u0644\u0642\u0637\u0631\u064a \ud83c\uddf6\ud83c\udde6","symbol":"\u0631.\u0642","rate":0.97,"created_at":"2024-04-18T09:31:40.000000Z","updated_at":"2024-04-18T09:31:40.000000Z"},"$":{"id":6,"name":"\u0627\u0644\u062f\u0648\u0644\u0627\u0631 \u0627\u0644\u0623\u0645\u0631\u064a\u0643\u064a \ud83c\uddfa\ud83c\uddf8","symbol":"$","rate":0.26,"created_at":"2024-04-18T09:31:40.000000Z","updated_at":"2024-04-18T09:31:40.000000Z"},"\u20ac":{"id":7,"name":"\u0627\u0644\u064a\u0648\u0631\u0648 \ud83c\uddea\ud83c\uddfa","symbol":"\u20ac","rate":0.25,"created_at":"2024-04-18T09:31:40.000000Z","updated_at":"2024-04-18T09:31:40.000000Z"}})</script>
+<meta name="csrf_token" content="" />
+<script src="/js/rmz-analytics.js?v=1785045271" data-store="14734" defer type="5f419077e0f0367b479bb3a9-text/javascript"></script>
+
+    <style>:root {
+    --rmz-primary: #44494f;
+    --rmz-font: 'Baloo Bhaijaan 2';
+    --rmz-bg: #0a0a0f;
+    --rmz-radius: 1rem;
+}</style>
+
+    <script type="5f419077e0f0367b479bb3a9-text/javascript">
+        (function(){
+            var c = '44494f';
+            var r = parseInt(c.substr(0,2),16), g = parseInt(c.substr(2,2),16), b = parseInt(c.substr(4,2),16);
+            var lum = (r*299 + g*587 + b*114) / 255000;
+            if (lum > 0.6) {
+                document.documentElement.style.setProperty('--rmz-on-primary', '#111');
+                document.documentElement.setAttribute('data-light-primary', '');
+            }
+        })();
+    </script>
+
+        <meta name="keywords" content="سجّل دخولك للمتابعة إلى المتجر">
+    <meta name="description" content="سجّل دخولك للمتابعة إلى المتجر" />
+    <meta property="og:title" content="𝐂𝐨𝐝𝐞𝐗">
+    <meta property="og:description" content="سجّل دخولك للمتابعة إلى المتجر">
+    <meta property="og:image" content="https://cdn.rmz.gg/store/logo/8feb9121457e1ceced043153be7bf6bc1ad25a7c.gif">
+    <meta property="og:url" content="https://codex112.rmz.gg">
+    <meta name="theme-color" content="#44494f">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:type" content="website">
+</head>
+<body class="min-h-screen antialiased">
+    
+
+        
+        
+<script type="5f419077e0f0367b479bb3a9-text/javascript">
+    function dismissAnnouncement(id) {
+        localStorage.setItem('announcement_dismissed_' + id, '1');
+        var el = document.querySelector('.announcement-wrapper-' + id);
+        if (el) el.style.display = 'none';
+    }
+</script>
+
+        <div class="mobile-menu-overlay" id="mobileOverlay" onclick="if (!window.__cfRLUnblockHandlers) return false; closeMobileMenu()" data-cf-modified-5f419077e0f0367b479bb3a9-=""></div>
+
+        <div class="mobile-drawer" id="mobileDrawer">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-8">
+                <h3 class="text-white font-bold text-lg">القائمة</h3>
+                <button onclick="if (!window.__cfRLUnblockHandlers) return false; closeMobileMenu()" class="text-zinc-400 hover:text-white transition" data-cf-modified-5f419077e0f0367b479bb3a9-="">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <nav class="space-y-1">
+                <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-300 hover:text-white hover:bg-white/5 transition">
+                    <i class="fas fa-home w-5 text-center"></i>
+                    <span>الرئيسية</span>
+                </a>
+
+                
+                                                                            <a href="/category/fayf-am-RK" class="flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-300 hover:text-white hover:bg-white/5 transition">
+                        <i class="fas fa-folder w-5 text-center"></i>
+                        <span>فايف إم</span>
+                    </a>
+                                                                                                                    <a href="/category/ksm-aldskord-pU" class="flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-300 hover:text-white hover:bg-white/5 transition">
+                        <i class="fas fa-folder w-5 text-center"></i>
+                        <span>قسم الدسكورد</span>
+                    </a>
+                                                                                                                    <a href="/category/ashtrakat-fj" class="flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-300 hover:text-white hover:bg-white/5 transition">
+                        <i class="fas fa-folder w-5 text-center"></i>
+                        <span>اشتراكات</span>
+                    </a>
+                                                                                                                    <a href="/category/khas-almtgr-C9" class="flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-300 hover:text-white hover:bg-white/5 transition">
+                        <i class="fas fa-folder w-5 text-center"></i>
+                        <span>خاص المتجر</span>
+                    </a>
+                                                                    </nav>
+
+                        <button onclick="if (!window.__cfRLUnblockHandlers) return false; closeMobileMenu(); RMZ.showCart()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-300 hover:text-white hover:bg-white/5 transition w-full text-right" data-cf-modified-5f419077e0f0367b479bb3a9-="">
+                <i class="fas fa-shopping-bag w-5 text-center"></i>
+                <span>السلة (<rmz-cart-count>0</rmz-cart-count>)</span>
+            </button>
+
+            <hr class="border-white/10 my-6">
+
+                        
+            <hr class="border-white/10 my-6">
+
+                                    <div class="flex items-center gap-4 px-4">
+                                <a href="https://discord.gg/pXAzQjENM" target="_blank" rel="noopener noreferrer" class="text-zinc-500 hover:text-white transition text-lg">
+                                            <i class="fa-brands fa-discord"></i>
+                                    </a>
+                            </div>
+                    </div>
+    </div>
+
+        <style>
+.obs-dropdown { opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity .2s ease, visibility .2s ease, transform .2s ease; pointer-events: none; }
+.obs-nav-item:hover > .obs-dropdown { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
+</style>
+<header class="sticky top-0 z-30 border-b border-glass" style="background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="flex items-center justify-between h-16">
+
+                        <div class="flex items-center gap-8">
+                                <a href="/" class="flex items-center gap-3 shrink-0">
+                                        <img src="https://cdn.rmz.gg/store/logo/8feb9121457e1ceced043153be7bf6bc1ad25a7c.gif" alt="𝐂𝐨𝐝𝐞𝐗" class="h-9 w-auto max-w-[140px] object-contain">
+                                    </a>
+
+                                <nav class="hidden lg:flex items-center gap-1">
+                    <a href="/" class="px-3 py-2 rounded-lg text-sm text-zinc-400 hover:text-white hover:bg-white/5 transition">الرئيسية</a>
+                    
+                                        <div class="relative obs-nav-item">
+                        <a href="/category/fayf-am-RK" class="px-3 py-2 rounded-lg text-sm text-zinc-400 hover:text-white hover:bg-white/5 transition flex items-center gap-1.5">
+                            فايف إم
+                                                    </a>
+                                            </div>
+                                        <div class="relative obs-nav-item">
+                        <a href="/category/ksm-aldskord-pU" class="px-3 py-2 rounded-lg text-sm text-zinc-400 hover:text-white hover:bg-white/5 transition flex items-center gap-1.5">
+                            قسم الدسكورد
+                                                    </a>
+                                            </div>
+                                        <div class="relative obs-nav-item">
+                        <a href="/category/ashtrakat-fj" class="px-3 py-2 rounded-lg text-sm text-zinc-400 hover:text-white hover:bg-white/5 transition flex items-center gap-1.5">
+                            اشتراكات
+                                                    </a>
+                                            </div>
+                                        <div class="relative obs-nav-item">
+                        <a href="/category/khas-almtgr-C9" class="px-3 py-2 rounded-lg text-sm text-zinc-400 hover:text-white hover:bg-white/5 transition flex items-center gap-1.5">
+                            خاص المتجر
+                                                    </a>
+                                            </div>
+                    
+                    
+                                    </nav>
+            </div>
+
+                        <div class="flex items-center gap-2">
+                                
+                                
+                                <button onclick="if (!window.__cfRLUnblockHandlers) return false; RMZ.showCart()" class="relative p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition" aria-label="السلة" data-cf-modified-5f419077e0f0367b479bb3a9-="">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                    <rmz-cart-count class="absolute -top-0.5 -left-0.5 min-w-[18px] h-[18px] flex items-center justify-center rounded-full text-[10px] font-bold" style="background: #44494f; color: var(--rmz-on-primary);"></rmz-cart-count>
+                </button>
+
+                                                <button onclick="if (!window.__cfRLUnblockHandlers) return false; RMZ.showAuth()" class="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition" aria-label="تسجيل الدخول" data-cf-modified-5f419077e0f0367b479bb3a9-="">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                </button>
+                
+                                <button onclick="if (!window.__cfRLUnblockHandlers) return false; openMobileMenu()" class="lg:hidden p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition" aria-label="القائمة" data-cf-modified-5f419077e0f0367b479bb3a9-="">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <main class="min-h-[60vh]">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        
+        
+        
+        
+                <section class="py-12">
+    <h2 class="text-2xl font-bold text-white text-center mb-8" dir="rtl">قسم الدسكورد</h2>
+
+    <div class="products-lazy-container"
+         data-component-id="28056"
+         data-is-grid="1">
+
+                <div class="products-skeleton">
+                        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                            </div>
+                    </div>
+
+                <div class="products-content" style="display: none;"></div>
+    </div>
+
+    </section>
+    
+
+        
+        
+        
+                <section class="py-12">
+    <h2 class="text-2xl font-bold text-white text-center mb-8" dir="rtl">فايف إم</h2>
+
+    <div class="products-lazy-container"
+         data-component-id="28057"
+         data-is-grid="1">
+
+                <div class="products-skeleton">
+                        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                            </div>
+                    </div>
+
+                <div class="products-content" style="display: none;"></div>
+    </div>
+
+    </section>
+    
+
+        
+        
+        
+                <section class="py-12">
+    <h2 class="text-2xl font-bold text-white text-center mb-8" dir="rtl">اشتراكات</h2>
+
+    <div class="products-lazy-container"
+         data-component-id="28058"
+         data-is-grid="1">
+
+                <div class="products-skeleton">
+                        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                            </div>
+                    </div>
+
+                <div class="products-content" style="display: none;"></div>
+    </div>
+
+    </section>
+    
+
+        
+        
+        
+                <section class="py-12">
+    <h2 class="text-2xl font-bold text-white text-center mb-8" dir="rtl">خاص المتجر</h2>
+
+    <div class="products-lazy-container"
+         data-component-id="28059"
+         data-is-grid="1">
+
+                <div class="products-skeleton">
+                        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                                <div class="glass-card overflow-hidden">
+                    <div class="aspect-square skeleton-animate"></div>
+                    <div class="p-4">
+                        <div class="h-4 skeleton-animate rounded mb-3 w-3/4"></div>
+                        <div class="flex justify-between items-center">
+                            <div class="h-5 skeleton-animate rounded w-20"></div>
+                            <div class="w-10 h-10 skeleton-animate rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                            </div>
+                    </div>
+
+                <div class="products-content" style="display: none;"></div>
+    </div>
+
+    </section>
+    
+
+
+    </div>
+    </main>
+
+        <footer class="border-t border-glass mt-20" style="background: rgba(255, 255, 255, 0.02);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+
+                        <div>
+                <div class="flex items-center gap-3 mb-4">
+                                        <img src="https://cdn.rmz.gg/store/logo/8feb9121457e1ceced043153be7bf6bc1ad25a7c.gif" alt="𝐂𝐨𝐝𝐞𝐗" class="h-10 w-auto max-w-[160px] object-contain">
+                                        <h3 class="text-white font-bold text-lg">𝐂𝐨𝐝𝐞𝐗</h3>
+                </div>
+                                <p class="text-zinc-500 text-sm leading-relaxed footer-desc collapsed" id="footerDesc" style="white-space: pre-line; word-break: break-word; overflow-wrap: anywhere; max-height: 72px; overflow: hidden; transition: max-height 0.4s ease;">سجّل دخولك للمتابعة إلى المتجر</p>
+                <button class="text-sm mt-2 transition hover:opacity-80 hidden" id="footerDescToggle" onclick="if (!window.__cfRLUnblockHandlers) return false; toggleFooterDesc()" style="color: #44494f;" data-cf-modified-5f419077e0f0367b479bb3a9-="">
+                    <span class="footer-desc-text">عرض المزيد</span>
+                    <i class="fas fa-chevron-down text-[10px] mr-1 footer-desc-icon" style="transition: transform 0.3s ease;"></i>
+                </button>
+                
+                                                <div class="flex items-center gap-4 mt-6">
+                                        <a href="https://discord.gg/pXAzQjENM" target="_blank" rel="noopener noreferrer" class="text-zinc-600 hover:text-white transition text-lg">
+                                                    <i class="fa-brands fa-discord"></i>
+                                            </a>
+                                    </div>
+                            </div>
+
+                        <div>
+                <h4 class="text-white font-semibold mb-4">المتجر</h4>
+                <nav class="space-y-3">
+                    <a href="/" class="block text-zinc-500 hover:text-white text-sm transition">الرئيسية</a>
+                                                                                                    <a href="/page/syas-alastrgaaa-oalastbdal" class="block text-zinc-500 hover:text-white text-sm transition">سياسة الإسترجاع والاستبدال</a>
+                                        <a href="/page/alshrot-oalahkam" class="block text-zinc-500 hover:text-white text-sm transition">الشروط والأحكام</a>
+                                                        </nav>
+            </div>
+
+                        <div>
+                <h4 class="text-white font-semibold mb-4">حسابي</h4>
+                <nav class="space-y-3">
+                                        <button onclick="if (!window.__cfRLUnblockHandlers) return false; RMZ.showAuth()" class="block text-zinc-500 hover:text-white text-sm transition text-right" data-cf-modified-5f419077e0f0367b479bb3a9-="">تسجيل الدخول</button>
+                    <button onclick="if (!window.__cfRLUnblockHandlers) return false; RMZ.showAuth()" class="block text-zinc-500 hover:text-white text-sm transition text-right" data-cf-modified-5f419077e0f0367b479bb3a9-="">تسجيل حساب جديد</button>
+                                        <button onclick="if (!window.__cfRLUnblockHandlers) return false; RMZ.showCart()" class="block text-zinc-500 hover:text-white text-sm transition text-right" data-cf-modified-5f419077e0f0367b479bb3a9-="">السلة</button>
+                </nav>
+            </div>
+        </div>
+
+                <div class="border-t border-glass mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-zinc-600 text-sm">
+                                    جميع الحقوق محفوظة &copy; 2026 <a href="https://rmz.gg" target="_blank" rel="noopener" class="text-zinc-500 hover:text-white transition">رمز</a>
+                            </p>
+
+            <div class="flex items-center gap-4">
+                                
+                                            </div>
+        </div>
+
+                        <div class="mt-6">
+            <div class="flex flex-wrap items-center justify-center gap-3">
+                                                            <img src="/store/global/payments/bank.png" alt="bank" title="bank" class="w-auto object-contain bg-white rounded-md py-1 hover:-translate-y-0.5 transition" style="height: 28px; max-height: 28px; padding: 5px 10px;" />
+                                                                                <img src="/store/global/payments/paypal.png" alt="paypal" title="paypal" class="w-auto object-contain bg-white rounded-md py-1 hover:-translate-y-0.5 transition" style="height: 28px; max-height: 28px; padding: 5px 10px;" />
+                                                                                <img src="/store/global/payments/mada.png" alt="مدى" title="مدى" class="w-auto object-contain bg-white rounded-md py-1 hover:-translate-y-0.5 transition" style="height: 28px; max-height: 28px; padding: 2px 6px;" />
+                        <img src="/store/global/payments/visa.png" alt="Visa" title="Visa" class="w-auto object-contain bg-white rounded-md py-1 hover:-translate-y-0.5 transition" style="height: 28px; max-height: 28px; padding: 5px 10px;" />
+                        <img src="/store/global/payments/mastercard.png" alt="Mastercard" title="Mastercard" class="w-auto object-contain bg-white rounded-md py-1 hover:-translate-y-0.5 transition" style="height: 28px; max-height: 28px; padding: 5px 10px;" />
+                        <img src="/store/global/payments/applepay.png" alt="Apple Pay" title="Apple Pay" class="w-auto object-contain bg-white rounded-md py-1 hover:-translate-y-0.5 transition" style="height: 28px; max-height: 28px; padding: 5px 10px;" />
+                        <img src="/store/global/payments/stcpay.png" alt="STC Pay" title="STC Pay" class="w-auto object-contain bg-white rounded-md py-1 hover:-translate-y-0.5 transition" style="height: 28px; max-height: 28px; padding: 5px 10px;" />
+                                                </div>
+        </div>
+            </div>
+</footer>
+
+
+<script type="5f419077e0f0367b479bb3a9-text/javascript">
+document.addEventListener('DOMContentLoaded', function() {
+    var desc = document.getElementById('footerDesc');
+    var toggle = document.getElementById('footerDescToggle');
+    if (desc && desc.scrollHeight > 72) {
+        toggle.classList.remove('hidden');
+    }
+});
+function toggleFooterDesc() {
+    var desc = document.getElementById('footerDesc');
+    var toggle = document.getElementById('footerDescToggle');
+    var text = toggle.querySelector('.footer-desc-text');
+    var icon = toggle.querySelector('.footer-desc-icon');
+    if (desc.style.maxHeight === '1000px') {
+        desc.style.maxHeight = '72px';
+        text.textContent = 'عرض المزيد';
+        icon.style.transform = 'rotate(0deg)';
+    } else {
+        desc.style.maxHeight = '1000px';
+        text.textContent = 'عرض أقل';
+        icon.style.transform = 'rotate(180deg)';
+    }
+}
+</script>
+
+        <form id="logoutCustomer" action="/logout" method="POST" style="display:none;">
+        <input type="hidden" name="_token" value="" autocomplete="off">
+    </form>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" type="5f419077e0f0367b479bb3a9-text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" type="5f419077e0f0367b479bb3a9-text/javascript"></script>
+
+    <rmz-ui id="rmz-ui">
+    <!-- RMZ UI CORE START -->
+        <rmz-ui-store theme="dark" id="rmz-ui-root" primary-color="#44494f" store-name="𝐂𝐨𝐝𝐞𝐗" store-logo="https://cdn.rmz.gg/store/logo/8feb9121457e1ceced043153be7bf6bc1ad25a7c.gif" background-color="#0a0a0f" surface-color="#151520" text-color="#e4e4e7" text-muted-color="#71717a" border-color="#1e1e2e"></rmz-ui-store>
+        <link rel="preload" as="style" href="https://assets.rmz.gg/rmz-core-ui/assets/main-bCQOzlIa.css" /><link rel="modulepreload" as="script" href="https://assets.rmz.gg/rmz-core-ui/assets/rmz-init-vZoHEjQS.js" /><link rel="modulepreload" as="script" href="https://assets.rmz.gg/rmz-core-ui/assets/main-CEfTGAoW.js" /><link rel="modulepreload" as="script" href="https://assets.rmz.gg/rmz-core-ui/assets/animation-d_urnCXz.js" /><link rel="modulepreload" as="script" href="https://assets.rmz.gg/rmz-core-ui/assets/vendor-BwIbwe3t.js" /><link rel="modulepreload" as="script" href="https://assets.rmz.gg/rmz-core-ui/assets/ui-GRjESTj7.js" /><link rel="modulepreload" as="script" href="https://assets.rmz.gg/rmz-core-ui/assets/query-D1NJAboC.js" /><link rel="stylesheet" href="https://assets.rmz.gg/rmz-core-ui/assets/main-bCQOzlIa.css" /><script type="5f419077e0f0367b479bb3a9-module" src="https://assets.rmz.gg/rmz-core-ui/assets/rmz-init-vZoHEjQS.js"></script><script type="5f419077e0f0367b479bb3a9-module" src="https://assets.rmz.gg/rmz-core-ui/assets/main-CEfTGAoW.js"></script>
+    <!-- Store Custom Scripts -->
+<script type="5f419077e0f0367b479bb3a9-text/javascript">
+        (function () {
+  if (window.__CODEX_FX__) return;
+  window.__CODEX_FX__ = true;
+
+  // أخفِ تلميح السحب فوراً قبل تحميل المنتجات
+  try {
+    var early = document.createElement("style");
+    early.id = "codex-swipe-hide";
+    early.textContent =
+      "p.swipe-hint{display:none!important;}p.swipe-hint.codex-swipe-visible{display:block!important;}";
+    (document.head || document.documentElement).appendChild(early);
+  } catch (e) {}
+
+  function initStars() {
+    if (document.getElementById("codex-starfield")) return;
+
+    var canvas = document.createElement("canvas");
+    canvas.id = "codex-starfield";
+    function forceFixed() {
+      canvas.style.setProperty("position", "fixed", "important");
+      canvas.style.setProperty("top", "0", "important");
+      canvas.style.setProperty("left", "0", "important");
+      canvas.style.setProperty("right", "0", "important");
+      canvas.style.setProperty("bottom", "0", "important");
+      canvas.style.setProperty("width", "100vw", "important");
+      canvas.style.setProperty("height", "100vh", "important");
+      canvas.style.setProperty("margin", "0", "important");
+      canvas.style.setProperty("padding", "0", "important");
+      canvas.style.setProperty("border", "0", "important");
+      canvas.style.setProperty("z-index", "-1", "important");
+      canvas.style.setProperty("pointer-events", "none", "important");
+      canvas.style.setProperty("display", "block", "important");
+      canvas.style.setProperty("background", "transparent", "important");
+    }
+    forceFixed();
+    document.body.appendChild(canvas);
+    forceFixed();
+
+    var ctx = canvas.getContext("2d");
+    var stars = [];
+    var mouse = { x: 0.5, y: 0.5 };
+    var target = { x: 0.5, y: 0.5 };
+    var COUNT = 280;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    function makeStars() {
+      stars = [];
+      for (var i = 0; i < COUNT; i++) {
+        stars.push({
+          x: Math.random(),
+          y: Math.random(),
+          z: Math.random() * 0.85 + 0.15,
+          r: Math.random() * 2.2 + 0.6,
+          a: Math.random() * 0.45 + 0.55,
+          tw: Math.random() * Math.PI * 2,
+        });
+      }
+    }
+    function draw() {
+      mouse.x += (target.x - mouse.x) * 0.08;
+      mouse.y += (target.y - mouse.y) * 0.08;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      var ox = (mouse.x - 0.5) * 70;
+      var oy = (mouse.y - 0.5) * 70;
+      for (var i = 0; i < stars.length; i++) {
+        var s = stars[i];
+        s.tw += 0.025 + s.z * 0.025;
+        var twinkle = 0.65 + Math.sin(s.tw) * 0.35;
+        var px = s.x * canvas.width + ox * s.z;
+        var py = s.y * canvas.height + oy * s.z;
+        var radius = Math.max(0.8, s.r * (0.55 + s.z * 0.7));
+        ctx.beginPath();
+        ctx.fillStyle = "rgba(255,255,255," + Math.min(1, s.a * twinkle) + ")";
+        ctx.arc(px, py, radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      requestAnimationFrame(draw);
+    }
+    window.addEventListener(
+      "mousemove",
+      function (e) {
+        target.x = e.clientX / window.innerWidth;
+        target.y = e.clientY / window.innerHeight;
+      },
+      { passive: true },
+    );
+    window.addEventListener(
+      "touchmove",
+      function (e) {
+        if (!e.touches || !e.touches[0]) return;
+        target.x = e.touches[0].clientX / window.innerWidth;
+        target.y = e.touches[0].clientY / window.innerHeight;
+      },
+      { passive: true },
+    );
+    window.addEventListener("resize", resize);
+    resize();
+    makeStars();
+    draw();
+  }
+
+  function findScroller(section) {
+    var scope =
+      section.querySelector(".products-content") ||
+      section.querySelector(".products-lazy-container") ||
+      section;
+    var nodes = scope.querySelectorAll("*");
+    var best = null;
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      var style = window.getComputedStyle(el);
+      var ox = style.overflowX;
+      if (ox !== "auto" && ox !== "scroll") continue;
+      if (!best || el.scrollWidth > best.scrollWidth) best = el;
+    }
+    if (best) return best;
+
+    var flex = scope.querySelector(".flex");
+    return flex || scope;
+  }
+
+  function updateSwipeHints() {
+    codexDedupeSections();
+    var hints = document.querySelectorAll("p.swipe-hint");
+    for (var i = 0; i < hints.length; i++) {
+      var hint = hints[i];
+      // مخفي افتراضياً — يظهر فقط إذا السلايدر أوسع من الشاشة
+      hint.style.setProperty("display", "none", "important");
+      hint.classList.remove("codex-swipe-visible");
+
+      var section = hint.closest("section");
+      if (!section) continue;
+
+      var scroller = findScroller(section);
+      var needsScroll = false;
+
+      if (scroller) {
+        needsScroll = scroller.scrollWidth > scroller.clientWidth + 4;
+      }
+
+      // احتياط: صف المنتجات أعرض من الحاوية
+      if (!needsScroll) {
+        var content =
+          section.querySelector(".products-content") ||
+          section.querySelector(".products-lazy-container");
+        var row =
+          (content && content.querySelector(".flex")) ||
+          (content && content.firstElementChild);
+        if (content && row) {
+          needsScroll = row.scrollWidth > content.clientWidth + 4;
+        }
+      }
+
+      // احتياط أخير بعدد الكروت مقابل عرض الشاشة
+      if (!needsScroll) {
+        var cards = section.querySelectorAll(
+          ".product-item, a[href*='/product/']",
+        );
+        var unique = {};
+        var count = 0;
+        for (var c = 0; c < cards.length; c++) {
+          var key =
+            cards[c].getAttribute("href") ||
+            cards[c].innerText ||
+            String(c);
+          if (!unique[key]) {
+            unique[key] = true;
+            count += 1;
+          }
+        }
+        var cardW = 280;
+        var gap = 16;
+        var pad = 48;
+        var fit = Math.max(
+          1,
+          Math.floor((window.innerWidth - pad + gap) / (cardW + gap)),
+        );
+        needsScroll = count > fit;
+      }
+
+      if (needsScroll) {
+        hint.style.setProperty("display", "block", "important");
+        hint.classList.add("codex-swipe-visible");
+      }
+    }
+  }
+
+  function initSwipeHints() {
+    updateSwipeHints();
+    window.addEventListener("resize", updateSwipeHints);
+    // products load lazily — recheck a few times
+    var tries = 0;
+    var timer = setInterval(function () {
+      updateSwipeHints();
+      tries += 1;
+      if (tries >= 20) clearInterval(timer);
+    }, 500);
+    document.addEventListener("DOMContentLoaded", updateSwipeHints);
+    // observe lazy containers filling in
+    try {
+      var mo = new MutationObserver(function () {
+        updateSwipeHints();
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+    } catch (e) {}
+  }
+
+  function codexDedupeSections() {
+    // توحيد اسم قسم الدسكورد
+    var heads = document.querySelectorAll("h2, a, span, button");
+    for (var i = 0; i < heads.length; i++) {
+      var el = heads[i];
+      if (!el.childElementCount && (el.textContent || "").trim() === "بوتات دسكورد") {
+        el.textContent = "قسم الدسكورد";
+      }
+    }
+
+    var seen = {};
+    var sections = document.querySelectorAll("section.py-12");
+    for (var s = 0; s < sections.length; s++) {
+      var sec = sections[s];
+      var h2 = sec.querySelector("h2");
+      var title = (h2 && h2.innerText || "").trim();
+      if (title === "بوتات دسكورد") {
+        title = "قسم الدسكورد";
+        if (h2) h2.textContent = title;
+      }
+      if (!title) continue;
+      if (seen[title]) {
+        sec.style.setProperty("display", "none", "important");
+      } else {
+        seen[title] = true;
+        sec.style.removeProperty("display");
+      }
+    }
+    // أخفِ كل تلميحات السحب دائماً (العرض شبكة)
+    var hints = document.querySelectorAll("p.swipe-hint");
+    for (var h = 0; h < hints.length; h++) {
+      hints[h].style.setProperty("display", "none", "important");
+    }
+  }
+
+  function boot() {
+    codexDedupeSections();
+    setTimeout(codexDedupeSections, 800);
+    setTimeout(codexDedupeSections, 2000);
+    // أزل زر الترحيب لو كان باقي من نسخة قديمة
+    var oldBtn = document.getElementById("codex-audio-unlock");
+    if (oldBtn) oldBtn.remove();
+    initStars();
+    initSwipeHints();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
+})();
+</script>
+    <!-- RMZ UI CORE END -->
+</rmz-ui>
+
+
+<script type="5f419077e0f0367b479bb3a9-text/javascript">
+    window.addEventListener("RMZ.FRONTEND.EVENT", ({detail}) => {
+        switch (detail.type){
+            case 'error':
+                window.dispatchEvent(new CustomEvent("RMZ.FRONTEND.TOAST",{
+                    detail: {
+                        type:"error",
+                        message: detail?.message
+                    }
+                }))
+                break;
+
+            case 'success':
+                window.dispatchEvent(new CustomEvent("RMZ.FRONTEND.TOAST",{
+                    detail: {
+                        type:"success",
+                        message: detail?.message
+                    }
+                }))
+                break;
+        }
+    })
+
+        
+    </script>
+
+    <style>
+    /* codeX starfield — ثابت، ما يدفع الهيدر لتحت */
+html, body {
+  background: #000000 !important;
+  background-color: #000000 !important;
+  margin: 0 !important;
+  padding-top: 0 !important;
+}
+
+body {
+  isolation: isolate;
+}
+
+#codex-starfield {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  display: block !important;
+  background: transparent !important;
+  float: none !important;
+  clear: none !important;
+  transform: translateZ(0);
+}
+
+/* إخفاء تلميح السحب افتراضياً — يظهر فقط عند الحاجة عبر JS */
+p.swipe-hint {
+  display: none !important;
+}
+
+p.swipe-hint.codex-swipe-visible {
+  display: block !important;
+}
+</style>
+
+
+    <script type="5f419077e0f0367b479bb3a9-text/javascript">
+        // Mobile menu
+        function openMobileMenu() {
+            document.getElementById('mobileOverlay').classList.add('active');
+            document.getElementById('mobileDrawer').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeMobileMenu() {
+            document.getElementById('mobileOverlay').classList.remove('active');
+            document.getElementById('mobileDrawer').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Lazy load product sections — batch fetch all at once on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            var containers = document.querySelectorAll('.products-lazy-container');
+            if (!containers.length) return;
+
+            var componentMap = {};
+            containers.forEach(function(el) {
+                componentMap[el.dataset.componentId] = { el: el, isGrid: el.dataset.isGrid === '1' };
+            });
+
+            var ids = Object.keys(componentMap);
+
+            function renderComponent(el, html, isGrid) {
+                if (!html) return;
+                var skeleton = el.querySelector('.products-skeleton');
+                var content = el.querySelector('.products-content');
+                if (skeleton) skeleton.style.display = 'none';
+                if (content) {
+                    content.innerHTML = html;
+                    content.style.display = 'block';
+                    content.classList.add('loaded');
+                }
+
+                if (!isGrid) {
+                    var swiperEl = content.querySelector('.products-swiper');
+                    if (swiperEl) {
+                        new Swiper(swiperEl, {
+                            slidesPerView: 'auto',
+                            spaceBetween: 16,
+                            navigation: {
+                                nextEl: swiperEl.querySelector('.swiper-button-next'),
+                                prevEl: swiperEl.querySelector('.swiper-button-prev'),
+                            },
+                            breakpoints: {
+                                320: { slidesPerView: 1.3 },
+                                640: { slidesPerView: 2.3 },
+                                1024: { slidesPerView: 3.5 },
+                                1280: { slidesPerView: 4 },
+                            }
+                        });
+                    }
+
+                    var hint = el.closest('section')?.querySelector('.swipe-hint');
+                    if (hint) hint.style.display = 'block';
+                }
+            }
+
+            if (ids.length === 1) {
+                fetch('/api/component/' + ids[0] + '/products', {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data.success && data.html) {
+                        renderComponent(componentMap[ids[0]].el, data.html, componentMap[ids[0]].isGrid);
+                    }
+                });
+            } else {
+                fetch('/api/components/products/batch?ids=' + ids.join(','), {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (!data.success || !data.components) return;
+                    ids.forEach(function(id) {
+                        renderComponent(componentMap[id].el, data.components[id] || '', componentMap[id].isGrid);
+                    });
+                });
+            }
+
+            // Init reviews swiper
+            var reviewsSwiper = document.querySelector('.reviews-swiper');
+            if (reviewsSwiper) {
+                new Swiper(reviewsSwiper, {
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                    pagination: {
+                        el: '.reviews-pagination',
+                        clickable: true,
+                    },
+                    breakpoints: {
+                        640: { slidesPerView: 2 },
+                        1024: { slidesPerView: 3 },
+                    }
+                });
+            }
+        });
+
+        // FAQ toggle
+        function toggleFaq(button) {
+            var item = button.closest('.faq-item');
+            var isActive = item.classList.contains('active');
+            document.querySelectorAll('.faq-item').forEach(function(el) {
+                el.classList.remove('active');
+            });
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        }
+
+        function toggleShowMoreFaq(button) {
+            var isExpanded = button.classList.contains('expanded');
+            var hiddenItems = document.querySelectorAll('.faq-hidden');
+            var textSpan = button.querySelector('.show-more-text');
+
+            if (isExpanded) {
+                var items = Array.from(hiddenItems).reverse();
+                items.forEach(function(item, index) {
+                    setTimeout(function() {
+                        item.classList.remove('faq-visible');
+                        setTimeout(function() { item.style.display = 'none'; }, 300);
+                    }, index * 50);
+                });
+                button.classList.remove('expanded');
+                textSpan.textContent = 'عرض المزيد';
+            } else {
+                hiddenItems.forEach(function(item, index) {
+                    item.style.display = 'block';
+                    setTimeout(function() { item.classList.add('faq-visible'); }, index * 50 + 10);
+                });
+                button.classList.add('expanded');
+                textSpan.textContent = 'عرض أقل';
+            }
+        }
+    </script>
+
+    
+    <RMZ-TOAST></RMZ-TOAST>
+    
+<script src="/cdn-cgi/scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" data-cf-settings="5f419077e0f0367b479bb3a9-|49" defer></script><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"33a358aab3704be3b82e7031bf490bdc"}' crossorigin="anonymous"></script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a267b56c1e4be5bf',t:'MTc4NTk1MjkwMw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
